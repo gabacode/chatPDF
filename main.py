@@ -42,5 +42,5 @@ def ask(file):
         print("👻 Response: " + str(response))
 
 
-if name == "main":
+if __name__ == "__main__":
     ask("file.pdf")
