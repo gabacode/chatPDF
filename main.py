@@ -19,7 +19,7 @@ def ask(file):
     while True:
         prompt = input("[Prompt]: ")
         response = index.query(prompt)
-        print("[Response]: " + response)
+        print("[Response]: " + str(response))
 
 
 if __name__ == "__main__":
