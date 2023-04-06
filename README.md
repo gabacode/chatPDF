@@ -18,7 +18,7 @@ pip install -r requirements.txt
 OPENAI_API_KEY=<your key here>
 ```
 
-- Replace the file `file.pdf` with the PDF you want to use.
+- Select a file from the menu or replace the default file `file.pdf` with the PDF you want to use.
 
 - Run the script.
 
