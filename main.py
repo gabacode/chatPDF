@@ -1,4 +1,6 @@
 import logging
+logging.basicConfig(level=logging.CRITICAL)
+
 import os
 from pathlib import Path
 import sys
@@ -10,7 +12,6 @@ import openai
 
 load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
-logging.basicConfig(level=logging.CRITICAL)
 
 FILES = "./files"
 
