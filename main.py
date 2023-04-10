@@ -1,3 +1,7 @@
+import logging
+
+logging.basicConfig(level=logging.CRITICAL)
+
 import os
 from pathlib import Path
 
@@ -15,9 +19,7 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 def ask(file):
     print("👀 Loading...")
 
-    llm_predictor = LLMPredictor(
-        llm=ChatOpenAI(temperature=0.618, model_name="gpt-3.5-turbo", max_tokens=256, streaming=True)
-    )
+    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.618, model_name="gpt-3.5-turbo", max_tokens=256))
     service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, chunk_size_limit=1024)
     # Check if file is in cache
     cache_file = os.path.join(CACHE, f"{Path(file).stem}.json")
