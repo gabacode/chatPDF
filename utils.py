@@ -1,6 +1,5 @@
 import os
-
-from main import handle_exit
+import sys
 
 
 FILES = "./files"
@@ -37,3 +36,8 @@ def select_file():
         select_file()
 
     return file_path
+
+
+def handle_exit():
+    print("\nGoodbye!\n")
+    sys.exit(1)

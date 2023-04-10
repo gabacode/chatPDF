@@ -1,5 +1,4 @@
 import os
-import sys
 from pathlib import Path
 
 import openai
@@ -7,15 +6,10 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from llama_index import GPTSimpleVectorIndex, LLMPredictor, ServiceContext, download_loader
 
-from utils import CACHE, initialize, select_file
+from utils import CACHE, handle_exit, initialize, select_file
 
 load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
-
-
-def handle_exit():
-    print("\nGoodbye!\n")
-    sys.exit(1)
 
 
 def ask(file):
