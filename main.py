@@ -1,27 +1,27 @@
 import logging
 
-from langchain import OpenAI
-
 logging.basicConfig(level=logging.CRITICAL)
-
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
-from dotenv import load_dotenv
-from llama_index import GPTSimpleVectorIndex, LLMPredictor, ServiceContext, download_loader
 import openai
-
+from dotenv import load_dotenv
+from langchain.chat_models import ChatOpenAI
+from llama_index import GPTSimpleVectorIndex, LLMPredictor, ServiceContext, download_loader
 
 load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 FILES = "./files"
+CACHE = f"{FILES}/.cache"
 
 
 def init():
     if not os.path.exists(FILES):
         os.mkdir(FILES)
+    if not os.path.exists(CACHE):
+        os.mkdir(CACHE)
 
 
 def handle_exit():
@@ -31,14 +31,20 @@ def handle_exit():
 
 def ask(file):
     print("👀 Loading...")
-    PDFReader = download_loader("PDFReader")
-    loader = PDFReader()
-    documents = loader.load_data(file=Path(file))
 
-    llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="text-davinci-003"))
-
+    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.618, model_name="gpt-3.5-turbo", max_tokens=256))
     service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, chunk_size_limit=1024)
-    index = GPTSimpleVectorIndex.from_documents(documents, service_context=service_context)
+    # Check if file is in cache
+    cache_file = os.path.join(CACHE, f"{Path(file).stem}.json")
+    if os.path.exists(cache_file):
+        index = GPTSimpleVectorIndex.load_from_disk(cache_file)
+    else:
+        PDFReader = download_loader("PDFReader")
+        loader = PDFReader()
+        documents = loader.load_data(file=Path(file))
+
+        index = GPTSimpleVectorIndex.from_documents(documents, service_context=service_context)
+        index.save_to_disk(cache_file)
 
     # clear the screen
     os.system("clear")
