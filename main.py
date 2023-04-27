@@ -10,16 +10,24 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from llama_index import GPTSimpleVectorIndex, LLMPredictor, ServiceContext, download_loader
 
-from utils import CACHE, handle_exit, initialize, select_file
+from utils import CACHE, handle_save, handle_exit, initialize, select_file
 
 load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
+models = {
+    "davinci": "text-davinci-003",
+    "gpt-3": "gpt-3.5-turbo"
+}
+
+history = []
+
+
 def ask(file):
     print("👀 Loading...")
 
-    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.618, model_name="gpt-3.5-turbo", max_tokens=256))
+    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.618, model_name=models["davinci"], max_tokens=256))
     service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, chunk_size_limit=1024)
     # Check if file is in cache
     cache_file = os.path.join(CACHE, f"{Path(file).stem}.json")
@@ -44,8 +52,14 @@ def ask(file):
             prompt = input("\n😎 Prompt: ")
             if prompt == "exit":
                 handle_exit()
+            if prompt == "save":
+                handle_save(str(file), history)
             response = index.query(prompt)
             print("\n👻 Response: " + str(response))
+            history.append({
+                "user": prompt,
+                "response": str(response)
+            })
     except KeyboardInterrupt:
         handle_exit()
 

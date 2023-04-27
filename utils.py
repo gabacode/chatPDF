@@ -1,4 +1,5 @@
 import os
+import json
 import sys
 
 
@@ -41,3 +42,7 @@ def select_file():
 def handle_exit():
     print("\nGoodbye!\n")
     sys.exit(1)
+
+def handle_save(title, history):
+    with open(f"{title}.json", "w") as f:
+        json.dump(history, f)
