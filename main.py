@@ -23,6 +23,8 @@ def init():
     if not os.path.exists(FILES):
         os.mkdir(FILES)
 
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 def handle_exit():
     print("\nGoodbye!\n")
@@ -41,7 +43,7 @@ def ask(file):
     index = GPTSimpleVectorIndex.from_documents(documents, service_context=service_context)
 
     # clear the screen
-    os.system("clear")
+    cls()
 
     print("✅ Ready! Let's start the conversation")
     print("ℹ️ Press Ctrl+C to exit")
@@ -68,7 +70,7 @@ def ask(file):
 
 
 def select_file():
-    os.system("clear")
+    cls()
     files = [file for file in os.listdir(FILES) if file.endswith(".pdf")]
     if len(files) == 0:
         return "file.pdf" if os.path.exists("file.pdf") else None
