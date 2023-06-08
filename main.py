@@ -27,7 +27,7 @@ history = []
 def ask(file):
     print("👀 Loading...")
 
-    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.618, model_name=models["davinci"], max_tokens=256))
+    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.618, model_name=models["gpt-3"], max_tokens=256))
     service_context = ServiceContext.from_defaults(llm_predictor=llm_predictor, chunk_size_limit=1024)
     # Check if file is in cache
     cache_file = os.path.join(CACHE, f"{Path(file).stem}.json")
