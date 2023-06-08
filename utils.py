@@ -13,9 +13,12 @@ def initialize():
     if not os.path.exists(CACHE):
         os.mkdir(CACHE)
 
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
+
 
 def select_file():
-    os.system("clear")
+    cls()
     files = [file for file in os.listdir(FILES) if file.endswith(".pdf")]
     if len(files) == 0:
         return "file.pdf" if os.path.exists("file.pdf") else None

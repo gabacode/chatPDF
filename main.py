@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
 from llama_index import GPTSimpleVectorIndex, LLMPredictor, ServiceContext, download_loader
 
-from utils import CACHE, handle_save, handle_exit, initialize, select_file
+from utils import CACHE, cls, handle_save, handle_exit, initialize, select_file
 
 load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -42,7 +42,7 @@ def ask(file):
         index.save_to_disk(cache_file)
 
     # clear the screen
-    os.system("clear")
+    cls()
 
     print("✅ Ready! Let's start the conversation")
     print("ℹ️ Press Ctrl+C to exit")
