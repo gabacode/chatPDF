@@ -8,18 +8,21 @@ from pathlib import Path
 import openai
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from llama_index import GPTSimpleVectorIndex, LLMPredictor, ServiceContext, download_loader
-
+from llama_index import (
+    GPTVectorStoreIndex,
+    LLMPredictor,
+    ServiceContext,
+    StorageContext,
+    download_loader,
+    load_index_from_storage,
+)
 from utils import CACHE, cls, handle_save, handle_exit, initialize, select_file
 
 load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
-models = {
-    "davinci": "text-davinci-003",
-    "gpt-3": "gpt-3.5-turbo"
-}
+models = {"davinci": "text-davinci-003", "gpt-3": "gpt-3.5-turbo"}
 
 history = []
 
@@ -32,14 +35,15 @@ def ask(file):
     # Check if file is in cache
     cache_file = os.path.join(CACHE, f"{Path(file).stem}.json")
     if os.path.exists(cache_file):
-        index = GPTSimpleVectorIndex.load_from_disk(cache_file)
+        storage_context = StorageContext.from_defaults(persist_dir=CACHE)
+        index = load_index_from_storage(storage_context)
     else:
         PDFReader = download_loader("PDFReader")
         loader = PDFReader()
         documents = loader.load_data(file=Path(file))
 
-        index = GPTSimpleVectorIndex.from_documents(documents, service_context=service_context)
-        index.save_to_disk(cache_file)
+        index = GPTVectorStoreIndex.from_documents(documents, service_context=service_context)
+        index.storage_context.persist(persist_dir=CACHE)
 
     # clear the screen
     cls()
@@ -54,12 +58,10 @@ def ask(file):
                 handle_exit()
             if prompt == "save":
                 handle_save(str(file), history)
-            response = index.query(prompt)
+            query_engine = index.as_query_engine(response_mode="compact")
+            response = query_engine.query(prompt)
             print("\n👻 Response: " + str(response))
-            history.append({
-                "user": prompt,
-                "response": str(response)
-            })
+            history.append({"user": prompt, "response": str(response)})
     except KeyboardInterrupt:
         handle_exit()
 
