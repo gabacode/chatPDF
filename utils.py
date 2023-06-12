@@ -6,6 +6,8 @@ import sys
 FILES = "./files"
 CACHE = f"{FILES}/.cache"
 
+models = {"davinci": "text-davinci-003", "gpt-3": "gpt-3.5-turbo"}
+
 
 def initialize():
     if not os.path.exists(FILES):
